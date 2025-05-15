@@ -1,35 +1,42 @@
 import userData from '../fixtures/userData.json'
+import LoginPage from '../pages/loginPage.js' 
+import DashboardPage from '../pages/dashboardPage.js'
+import MenuPage from '../pages/menuPage.js'
+
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menuPage = new MenuPage()
 
 
 describe('Orange HRM Tests', () => {
 
   const selectorsList = {
 
-    usernameField: "[name='username']",
-    passwordField: "[name='password']",
-    loginButton: "[type='submit']",
+    
     selectionTitleTopBar: ".oxd-text--h6",
     wrongCredetionAlert: "[role='alert']",
-    myInfoButton: ":nth-child(6) > .oxd-main-menu-item",
+    
     firstNameField: "[name='firstName']",
     nickNameTest:':nth-child(2) > :nth-child(2) > .oxd-input',
     lastNamefield: "[name='lastName']",
     genericField: ".oxd-input--active",
     dateCloseButton: ".--close",
-    submitButton: "[type='submit']"
+    submitButton: "[type='submit']",
+    genericCamboBox: ".oxd-select-text--arrow",
+    Nationality: ".oxd-select-dropdown > :nth-child(27)",
+    MaritalStatus:".oxd-select-dropdown > :nth-child(2)",
+    
 
   }
 
   
-
-
   it.only('User Info Update - Success', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
-    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.visit('/dashboard/index')
-    cy.get(selectorsList.myInfoButton).click()
+    loginPage.accessLoginPage()
+    loginPage.loginWithAnyUser(userData.userSuccess.username, userData.userSuccess.password)
+    dashboardPage.checkDashboardPage()
+    menuPage.accessMyInfo()
+   
     cy.get(selectorsList.firstNameField).clear().type('firstNameTest')
     cy.get(selectorsList.nickNameTest).clear()
     cy.get(selectorsList.lastNamefield).clear().type('lastNameTest')
@@ -38,6 +45,10 @@ describe('Orange HRM Tests', () => {
     cy.get(selectorsList.genericField).eq(5).clear().type('driversLicenseNumberTest')
     cy.get(selectorsList.genericField).eq(6).clear().type('2025-05-01')
     cy.get(selectorsList.dateCloseButton).click()
+    cy.get(selectorsList.genericCamboBox).eq(0).click()
+    cy.get(selectorsList.Nationality).click()
+    cy.get(selectorsList.genericCamboBox).eq(1).click()
+    cy.get(selectorsList.MaritalStatus).click()
     cy.get(selectorsList.submitButton).eq(0).click()
     cy.get('body').should('contain', 'Successfully Updated')
     cy.get('.oxd-toast-close')
@@ -53,5 +64,6 @@ describe('Orange HRM Tests', () => {
     cy.get(selectorsList.wrongCredetionAlert)
     
 })
+
 })
 
