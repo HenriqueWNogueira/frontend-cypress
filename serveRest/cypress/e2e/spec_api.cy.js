@@ -1,18 +1,13 @@
 beforeEach(() => {
 
-  cy.visit('https://front.serverest.dev/login')
-  cy.get('[data-testid="email"]').type('henriquewn@gmail.com')
-  cy.get('[data-testid="senha"]').type('12345')
-  cy.get('[data-testid="entrar"]').click()
-  cy.get('h1').contains('Bem Vindo Henrique Nogueira')
-
+  cy.login('henriquewn@gmail.com', '12345')
 })
 
 
 describe('feature de produtos spec', () => {
 
   it('fluxo 1 crud de produtos', () => {
-    cy.get('[data-testid="cadastrar-produtos"]').click()
+    cy.visit('https://front.serverest.dev/admin/cadastrarprodutos')
     cy.get('[data-testid="nome"]').type('celular')
     cy.get('[data-testid="preco"]').type('2000')
     cy.get('[data-testid="descricao"]').type('Cadê meu celular?')
@@ -29,13 +24,8 @@ describe('feature de produtos spec', () => {
 
 
   it('fluxo 2 crud de produtos', () => {
-    
-    cy.get('[data-testid="cadastrar-produtos"]').click()
-    cy.get('[data-testid="nome"]').type('tablet')
-    cy.get('[data-testid="preco"]').type('3000')
-    cy.get('[data-testid="descricao"]').type('Produto importado')
-    cy.get('[data-testid="quantity"]').type('50')
-    cy.get('[data-testid="cadastarProdutos"]').click()
+    cy.productRegistration('tablet', 3000, 'produto importado', 10)
+    cy.visit('https://front.serverest.dev/admin/listarprodutos')
     cy.get('h1').contains('Lista dos Produtos')
     cy.get('tbody').should('be.visible')
     cy.get('tr').each(($row) => {
@@ -43,7 +33,7 @@ describe('feature de produtos spec', () => {
         $row.find('td').eq(5).children('div').children('.btn-danger').click()}
     })
     cy.get('td').should('not.include.text', 'tablet')
-
+    
   })
 
 })
